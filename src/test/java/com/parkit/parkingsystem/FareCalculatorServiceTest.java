@@ -5,9 +5,11 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+import com.parkit.parkingsystem.service.VisitorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,11 +18,13 @@ import java.util.Date;
 public class FareCalculatorServiceTest {
 
     private static FareCalculatorService fareCalculatorService;
+    private static VisitorService visitorService;
     private Ticket ticket;
 
     @BeforeAll
     private static void setUp() {
-        fareCalculatorService = new FareCalculatorService();
+        visitorService = mock(VisitorService.class);
+        fareCalculatorService = new FareCalculatorService(visitorService);
     }
 
     @BeforeEach
@@ -54,7 +58,8 @@ public class FareCalculatorServiceTest {
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR);
+
+        assertEquals(Fare.BIKE_RATE_PER_HOUR,ticket.getPrice() );
     }
 
     @Test
@@ -127,4 +132,40 @@ public class FareCalculatorServiceTest {
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
+    @Test
+    public void calculateFareCarForRecurrentVisitor() {
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));  // 1 hour parking time
+        Date outTime = new Date();
+
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+
+        when(visitorService.recurrenVisitor(ticket)).thenReturn(true);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        double expectedPrice = Fare.CAR_RATE_PER_HOUR * Fare.REDUCTION_RECURRENT_VISITOR;
+        assertEquals(expectedPrice, ticket.getPrice(), 0.01);
+    }
+
+    @Test
+    public void calculateFreeFareForLessThan30Min() {
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis() - (15 * 60 * 1000));
+        Date outTime = new Date();
+
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        assertEquals(0, ticket.getPrice());
+    }
 }

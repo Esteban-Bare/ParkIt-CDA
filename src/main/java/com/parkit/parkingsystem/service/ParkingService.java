@@ -15,7 +15,8 @@ public class ParkingService {
 
     private static final Logger logger = LogManager.getLogger("ParkingService");
 
-    private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
+    static VisitorService visitorService = new VisitorService();
+    private static FareCalculatorService fareCalculatorService = new FareCalculatorService(visitorService);
 
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;

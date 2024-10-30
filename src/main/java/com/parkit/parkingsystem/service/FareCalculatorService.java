@@ -11,7 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FareCalculatorService {
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    private final VisitorService visitorService;
+    private final DiscountService discountService = new DiscountService();
+
+    public FareCalculatorService(VisitorService visitorService) {
+        this.visitorService = visitorService;
+    }
+
     public void calculateFare(Ticket ticket) {
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
@@ -23,24 +29,25 @@ public class FareCalculatorService {
         //TODO: Some tests are failing here. Need to check if this logic is correct
         double duration = ((outHour - inHour) / 3600000.0);
 
-        if (duration < 0.30) {
+        System.out.println(duration);
+        if (duration <= 0.50) { //0.50 represents half an hour, verifying if the duration of the ticket is less than an hour
             ticket.setPrice(0);
         } else {
             switch (ticket.getParkingSpot().getParkingType()) {
                 case CAR: {
-                    if (recurrenVisitor(ticket)) {
-                        ticket.setPrice((duration * Fare.CAR_RATE_PER_HOUR) * Fare.REDUCTION_RECURRENT_VISITOR);
-                    } else {
-                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-                    }
+                    double price = (duration * Fare.CAR_RATE_PER_HOUR);
+                    System.out.println(price);
+                    double priceDiscount = discountService.applyDiscount(price, this.visitorService.recurrenVisitor(ticket));
+                    System.out.println(priceDiscount);
+                    ticket.setPrice(priceDiscount);
                     break;
                 }
                 case BIKE: {
-                    if (recurrenVisitor(ticket)) {
-                        ticket.setPrice((duration * Fare.BIKE_RATE_PER_HOUR) * Fare.REDUCTION_RECURRENT_VISITOR);
-                    } else {
-                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-                    }
+                    double price = (duration * Fare.BIKE_RATE_PER_HOUR);
+                    System.out.println(price);
+                    double priceDiscount = discountService.applyDiscount(price, this.visitorService.recurrenVisitor(ticket));
+                    System.out.println(priceDiscount);
+                    ticket.setPrice(priceDiscount);
                     break;
                 }
                 default:
@@ -49,28 +56,5 @@ public class FareCalculatorService {
         }
     }
 
-    public boolean recurrenVisitor(Ticket ticket) {
-        Connection con = null;
-        int vcount = 0;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.RECURRENT_VISITOR);
-            ps.setString(1,ticket.getVehicleRegNumber());
 
-            ResultSet resultSet = ps.executeQuery();
-
-            while (resultSet.next()) {
-                vcount++;
-                if (vcount > 5) {
-                    return true;
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } finally {
-            dataBaseConfig.closeConnection(con);
-        }
-
-        return false;
-    }
 }
