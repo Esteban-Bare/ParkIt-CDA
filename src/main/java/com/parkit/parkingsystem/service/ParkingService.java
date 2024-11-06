@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -15,8 +16,9 @@ public class ParkingService {
 
     private static final Logger logger = LogManager.getLogger("ParkingService");
 
-    static VisitorService visitorService = new VisitorService();
-    private static FareCalculatorService fareCalculatorService = new FareCalculatorService(visitorService);
+    private final DataBaseConfig config = new DataBaseConfig();
+    public VisitorService visitorService = new VisitorService(this.config);
+    private final FareCalculatorService fareCalculatorService = new FareCalculatorService(visitorService);
 
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
