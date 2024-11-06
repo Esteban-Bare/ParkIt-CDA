@@ -8,7 +8,6 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.VisitorService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -176,7 +175,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeForRecurrentVisitor() throws SQLException {
+    public void calculateFareBikeForRecurrentVisitor() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));  // 1 hour parking time
         Date outTime = new Date();

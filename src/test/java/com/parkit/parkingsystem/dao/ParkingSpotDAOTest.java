@@ -41,8 +41,8 @@ class ParkingSpotDAOTest {
     private ResultSet resultSet;
 
     private ParkingSpot testParkingSpot;
-    private String  bikeType = "BIKE";
-    private int carParking = 1;
+    private final String  bikeType = "BIKE";
+    private final int carParking = 1;
 
     @BeforeEach
     void setUp() throws SQLException, ClassNotFoundException {

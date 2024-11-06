@@ -24,34 +24,34 @@ class ParkingSpotTest {
     @Test
     void testEquals() {
         ParkingSpot spot = new ParkingSpot(1, ParkingType.CAR,false);
-        assertTrue(spot.equals(spot));
+        assertEquals(spot, spot);
     }
 
     @Test
     void testEqualsObjects() {
         ParkingSpot spot1 = new ParkingSpot(1,ParkingType.BIKE,false);
         ParkingSpot spot2 = new ParkingSpot(1,ParkingType.BIKE,false);
-        assertTrue(spot1.equals(spot2));
+        assertEquals(spot1, spot2);
     }
 
     @Test
     void testNotEqualObjects() {
         ParkingSpot spot1 = new ParkingSpot(1,ParkingType.BIKE,false);
         ParkingSpot spot2 = new ParkingSpot(2,ParkingType.CAR,false);
-        assertFalse(spot1.equals(spot2));
+        assertNotEquals(spot1, spot2);
     }
 
     @Test
     void testObjectNull() {
         ParkingSpot spot = new ParkingSpot(1,ParkingType.BIKE,false);
-        assertFalse(spot.equals(null));
+        assertNotEquals(null, spot);
     }
 
     @Test
     void testDifferentClass() {
         ParkingSpot spot = new ParkingSpot(1,ParkingType.BIKE,false);
         Object i = new Object();
-        assertFalse(spot.equals(i));
+        assertNotEquals(spot, i);
     }
 
     @Test

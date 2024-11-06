@@ -41,7 +41,7 @@ class TicketDAOTest {
     private ResultSet resultSet;
 
     private Ticket testTicket;
-    private String vehicleRegNumber = "ABC123";
+    private final String vehicleRegNumber = "ABC123";
 
     @BeforeEach
     public void setUp() throws SQLException, ClassNotFoundException {

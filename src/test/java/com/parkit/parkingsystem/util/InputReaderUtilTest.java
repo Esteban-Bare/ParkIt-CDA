@@ -48,7 +48,7 @@ class InputReaderUtilTest {
     }
 
     @Test
-    void readVehicleRegistrationNumber() throws Exception {
+    void readVehicleRegistrationNumber() {
         String regInput = "ABC123";
         InputStream in = new ByteArrayInputStream(regInput.getBytes());
 

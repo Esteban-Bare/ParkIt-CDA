@@ -14,7 +14,7 @@ public class VisitorService {
         this.dataBaseConfig = dataBaseConfig;
     }
     public boolean recurrenVisitor(Ticket ticket) {
-        Connection con = null;
+        Connection con;
         int vcount = 0;
         try {
             con = dataBaseConfig.getConnection();
