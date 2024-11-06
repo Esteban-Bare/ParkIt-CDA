@@ -5,7 +5,6 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
-import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +30,6 @@ public class ParkingServiceTest {
     @Mock
     private TicketDAO ticketDAO;
 
-    // Test objects
-    private ParkingSpot parkingSpot;
     private Ticket ticket;
 
     @InjectMocks
@@ -46,7 +43,8 @@ public class ParkingServiceTest {
             lenient().when(inputReaderUtil.readSelection()).thenReturn(1); // Assuming 1 corresponds to CAR
 
             // Set up ParkingSpot and Ticket
-            parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+            // Test objects
+            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000))); // 1 hour before now
             ticket.setParkingSpot(parkingSpot);
